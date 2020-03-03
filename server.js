@@ -3,9 +3,9 @@ const express = require("express");
 const inquirer = require("inquirer");
 
 // Set up MySQL connection.
-var mysql = require("mysql");
+const mysql = require("mysql");
 
-var connection = mysql.createConnection({
+const connection = mysql.createConnection({
   host: "localhost",
   port: 3306,
   user: "root",
@@ -46,7 +46,7 @@ const employeeList = [
 ];
 
 // command-line that allows the user to update employee roles
-const updateEmployee = [
+const employeeUpdateOptions = [
     "Update Employee First Name",
     "Update Employee Last Name",
     "Update Employee Role",
@@ -68,7 +68,7 @@ function start() {
             case fullView[0]: viewEmployee();
             break;
 
-            case fullView[1]: updateEmpFunction();
+            case fullView[1]: employeeUpdateOptions();
             break;
 
             case fullView[2]: viewDepartment();
@@ -87,23 +87,30 @@ function start() {
 
 function viewEmployee() {
     console.log("Viewing Employees");
-    let selectVal = "SELECT first_name, last_name, title, force_points FROM employee";
-    selectVal += "LEFT JOIN role ";
-    selectVal += "On empoyee.role_id = role.id"
-    connection.query(selectVal, (err, result) => {
+    let selectVal = "SELECT first_name, last_name, title, name AS department, force_points, CONCAT(first_name, ' ' last_name) AS manager FROM employee";
+    selectVal += "LEFT JOIN role ON employee.role_id = role.id";
+    selectVal += "LEFT JOIN department ON department.id = role.department_id";
+    selectVal += "LEFT JOIN employee ON manager.id = employee.manager_id"
+    connection.query(selectVal, (err, res) => {
         if(err) throw err;
-        console.log(result)
+        console.table(res);
+        console.log(res)
         start();
     })
 }
 
 const updateEmpFunction = () => {
+    console.log("Updating Employees");
+    let selectVal = "SELECT first_name, last_name, title, name AS department, force_points, CONCAT(first_name, ' ' last_name) AS manager FROM employee";
+    selectVal += "LEFT JOIN role ON employee.role_id = role.id";
+    selectVal += "LEFT JOIN department ON department.id = role.department_id";
+    selectVal += "LEFT JOIN employee ON manager.id = employee.manager_id"
     function empUpdate() {
         inquirer.prompt({
             name: "task",
             type: "list",
             message: "Which employee would you like to update?",
-            choice: updateEmployee
+            choices: employeeList
         })
     }
     empUpdate();
