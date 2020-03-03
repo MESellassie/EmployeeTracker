@@ -71,6 +71,14 @@ function start() {
             case fullView[1]: updateEmpFunction();
             break;
 
+            case fullView[2]: viewDepartment();
+            break;
+
+            case fullView[3]: viewRole();
+            break;
+
+            case fullView[4]: connection.end();
+            break
 
         }
     })
@@ -103,6 +111,15 @@ const updateEmpFunction = () => {
 
 function viewDepartment() {
     let selectVal = "SELECT * FROM department";
+    connection.query(selectVal, (err, result) => {
+        if (err) throw err;
+        console.log(result)
+        start();
+    })
+}
+
+function viewRole() {
+    let selectVal = "SELECT * FROM role";
     connection.query(selectVal, (err, result) => {
         if (err) throw err;
         console.log(result)
