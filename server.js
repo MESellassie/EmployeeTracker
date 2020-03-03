@@ -55,7 +55,7 @@ const updateEmployee = [
 
 start();
 
-start() => {
+function start() {
     inquirer.prompt({
         name: "task",
         type: "list",
@@ -63,18 +63,23 @@ start() => {
         choices: fullView
 
     })
-    .then(answer) => {
+    .then(function (answer) {
         switch (answer.task) {
-            case.fullView[0]: viewEmployee();
+            case fullView[0]: viewEmployee();
             break;
+
+            case fullView[1]: updateEmpFunction();
+            break;
+
+
         }
-    }
+    })
 }
 
 
 function viewEmployee() {
     console.log("Viewing Employees");
-    const selectVal = "SELECT first_name, last_name, title, force_points FROM employee";
+    let selectVal = "SELECT first_name, last_name, title, force_points FROM employee";
     selectVal += "LEFT JOIN role ";
     selectVal += "On empoyee.role_id = role.id"
     connection.query(selectVal, (err, result) => {
@@ -84,3 +89,23 @@ function viewEmployee() {
     })
 }
 
+const updateEmpFunction = () => {
+    function empUpdate() {
+        inquirer.prompt({
+            name: "task",
+            type: "list",
+            message: "Which employee would you like to update?",
+            choice: updateEmployee
+        })
+    }
+    empUpdate();
+}
+
+function viewDepartment() {
+    let selectVal = "SELECT * FROM department";
+    connection.query(selectVal, (err, result) => {
+        if (err) throw err;
+        console.log(result)
+        start();
+    })
+}
