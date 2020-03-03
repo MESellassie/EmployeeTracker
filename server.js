@@ -55,6 +55,22 @@ const updateEmployee = [
 
 start();
 
+start() => {
+    inquirer.prompt({
+        name: "task",
+        type: "list",
+        message: "What would you like to do?",
+        choices: fullView
+
+    })
+    .then(answer) => {
+        switch (answer.task) {
+            case.fullView[0]: viewEmployee();
+            break;
+        }
+    }
+}
+
 
 function viewEmployee() {
     console.log("Viewing Employees");
@@ -64,6 +80,7 @@ function viewEmployee() {
     connection.query(selectVal, (err, result) => {
         if(err) throw err;
         console.log(result)
+        start();
     })
 }
 
